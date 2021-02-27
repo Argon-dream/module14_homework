@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HW mod 14/8</title>
+</head>
+<body>
+<input placeholder = "Номер страницы" id = "pageNum" size = 15 type="text"></input>
+<input placeholder = "Количество картинок" id = "limit" size = 15 type="text"></input>
+<button id = "btn">Запрос</button>
+<p><div id = "output"></div></p>
+<script>
+    let prevData = localStorage.getItem("images");
+    if(prevData != null) document.getElementById("output").innerHTML = prevData;
+
+    btn.onclick = function(){
+        if((document.getElementById("pageNum").value < 1 || document.getElementById("pageNum").value > 10) && (document.getElementById("limit").value < 1 || document.getElementById("limit").value > 10)) alert("Номер страницы и лимит картинок вне диапазона от 1 до 10");
+        else if(document.getElementById("pageNum").value < 1 || document.getElementById("pageNum").value > 10) alert("Номер страницы вне диапазона от 1 до 10");
+        else if(document.getElementById("limit").value < 1 || document.getElementById("limit").value > 10) alert("Лимит вне диапазона от 1 до 10");
+        else{
+            fetch(`https://picsum.photos/v2/list?page=${document.getElementById("pageNum").value}&limit=${document.getElementById("limit").value}`)
+                .then(response => response.json())
+                .then(json => {
+                    let cards = "";
+                    json.forEach(item => {
+                        const cardBlock = `
+                            <div class="card">
+                            <img
+                              src="${item.download_url}"
+                              class="card-image"
+                              width="200" height="200"
+                            />
+                            <p>${item.author}</p>
+                            </div>
+                            `;
+                        cards += cardBlock;
+                    });
+                    localStorage.setItem("images", cards);
+                    document.getElementById("output").innerHTML = cards;
+                })
+        }
+    }
+</script>
+</body>
+</html>
