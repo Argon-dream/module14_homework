@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>HW mod 14/7</title>
+</head>
+<body>
+<p>Введите id пользователя:
+<input type = "text" size = "5" id = "id">  <!--Поля для ввода id пользователя (от 1 до 10)-->
+<button id = "btn" >Получить список задач</button> </p>
+<p>Список задач пользователя:</p>
+<ol id = "list"></ol> <!-- Нумерованный список для вывода-->
+<script>
+    btn.onclick = function(){
+        let id = document.getElementById("id").value; //поиск списка дел пользователя по введенному id
+        fetch(`https://jsonplaceholder.typicode.com/users/${id}/todos`)
+            .then((response) => response.json())
+            .then((json) => {
+                if(json.length !== 0){ // если ответ имеется (массив не пустой)
+                    let output = "";
+                    for(let i = 0; i < json.length; i++)
+                        // Если дело выполнено - выписываем и вычеркиваем его через strike, иначе просто выписываем задачу:
+                        output += json[i].completed ? `<li><strike>${json[i].title}</strike></li>\n` : `<li>${json[i].title}</li>\n`;
+                        document.getElementById("list").innerHTML = output; // помещаем задачу в список для вывода
+                }
+                else alert("Пользователь с указанным id не найден");
+            });
+    }
+</script>
+</body>
+</html>
